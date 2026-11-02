@@ -11,7 +11,7 @@ This repository contains a responsive portfolio webpage that presents the projec
 ## Live Demo
 
 > Add your GitHub Pages link here once deployed, for example:
-> `[https://<your-username>.github.io/<repo-name>/](https://akram23679.github.io/HR-Analytics-Power-BI/)`
+> `(https://akram23679.github.io/HR-Analytics-Power-BI/)`
 
 ---
 
