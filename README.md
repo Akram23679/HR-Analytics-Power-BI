@@ -1,5 +1,7 @@
 # HR Analytics: Workforce & Attrition Insights
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-0f766e?style=for-the-badge)](https://akram23679.github.io/HR-Analytics-Power-BI/)
+
 **Project PRDA-03 · Akram Ali · October 2026**
 
 An HR analytics case study that explores workforce composition, hiring patterns, employee attrition and retention opportunities across **22,214 employee records**. The analysis turns raw people data into practical recommendations for HR teams.
@@ -10,8 +12,7 @@ This repository contains a responsive portfolio webpage that presents the projec
 
 ## Live Demo
 
-> Add your GitHub Pages link here once deployed, for example:
-> `(https://akram23679.github.io/HR-Analytics-Power-BI/)`
+**[View the live project →](https://akram23679.github.io/HR-Analytics-Power-BI/)**
 
 ---
 
@@ -100,7 +101,7 @@ No build step is needed.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/<your-username>/<repo-name>.git
+   git clone https://github.com/akram23679/HR-Analytics-Power-BI.git
    ```
 2. Open `index.html` in any modern browser.
 
@@ -111,7 +112,7 @@ An internet connection is needed to load Google Fonts and Chart.js from their CD
 1. Push the files to your repository.
 2. Go to **Settings → Pages**.
 3. Under **Source**, choose the `main` branch and the `/ (root)` folder.
-4. Save. Your site will be live at `https://<your-username>.github.io/<repo-name>/`.
+4. Save. Your site will be live at https://akram23679.github.io/HR-Analytics-Power-BI/.
 
 ---
 
@@ -137,6 +138,7 @@ An internet connection is needed to load Google Fonts and Chart.js from their CD
 ## Author
 
 **Akram Ali**  
-Data Analytics Project · PRDA-03
+Data Analytics Project · PRDA-03  
+GitHub: [@akram23679](https://github.com/akram23679)
 
 Feel free to connect or open an issue with questions or feedback.
