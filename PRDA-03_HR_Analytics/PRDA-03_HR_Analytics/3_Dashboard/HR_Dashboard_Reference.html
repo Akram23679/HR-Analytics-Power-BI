@@ -1,0 +1,326 @@
+<title>HR Analytics Dashboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: title bar, KPI row, full-width trend, then a grid of chart panels; each panel names the Power BI visual + fields */
+:root{
+  --bg:#f3f4f2; --panel:#fcfcfb; --line:#e3e4e0; --grid:#ecece8;
+  --fg:#16181a; --fg2:#52514e; --muted:#7a7a74;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --track:#e8eef6;
+  --warn:#b25a00;
+  --display:"Public Sans", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121211; --panel:#1a1a19; --line:#2c2c2a; --grid:#262624;
+  --fg:#f4f4f2; --fg2:#c3c2b7; --muted:#8f8e86;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --track:#1f2a38; --warn:#e89a4a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121211; --panel:#1a1a19; --line:#2c2c2a; --grid:#262624;
+  --fg:#f4f4f2; --fg2:#c3c2b7; --muted:#8f8e86;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --track:#1f2a38; --warn:#e89a4a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--display);font-size:14px;line-height:1.45}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:24px 40px;display:grid;gap:16px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px}
+h1{font-size:22px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--fg2);margin:4px 0 0;font-size:13px}
+.src{font-size:12px;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:grid;gap:4px;align-content:start}
+.lab{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--fg2)}
+.val{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.note{font-size:12px;color:var(--muted)}
+.split{display:flex;height:8px;border-radius:4px;overflow:hidden;gap:2px;margin-top:4px}
+.split span{display:block;height:100%}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:10px;align-content:start;min-width:0}
+.c12{grid-column:span 12}.c8{grid-column:span 8}.c4{grid-column:span 4}.c6{grid-column:span 6}
+h2{font-size:15px;font-weight:600;margin:0}
+.pbi{font-size:12px;color:var(--fg2);background:var(--bg);border-radius:4px;padding:6px 8px}
+.pbi{min-width:0}
+.pbi b{font-weight:600;color:var(--fg)}
+.insight{font-size:13px;color:var(--fg2);margin:0}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:minmax(90px,38%) 1fr auto;align-items:center;gap:8px;font-size:12.5px;cursor:default;padding:2px 0}
+.bar .n{color:var(--fg2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .t{height:14px;position:relative}
+.bar .f{position:absolute;inset:0 auto 0 0;background:var(--s1);border-radius:0 4px 4px 0;min-width:2px}
+.bar .v{font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums;color:var(--fg);min-width:52px;text-align:right}
+.bar:hover .f,.bar:focus .f{filter:brightness(1.12)}
+.bar:hover .n{color:var(--fg)}
+.flag .v{color:var(--warn);font-weight:600}
+svg text{fill:var(--muted);font-family:var(--display);font-size:11px}
+.donut{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.donut svg{width:150px;height:150px;flex:none}
+.legend{display:grid;gap:8px;font-size:13px;min-width:0}
+.legend div{display:grid;grid-template-columns:12px 1fr auto;gap:8px;align-items:center}
+.sw{width:12px;height:12px;border-radius:3px}
+.legend .num{font-family:var(--mono);font-size:12px;color:var(--fg2)}
+#tip{position:fixed;pointer-events:none;background:var(--fg);color:var(--panel);font-size:12px;padding:6px 9px;border-radius:4px;z-index:9;white-space:nowrap}
+#tip b{font-family:var(--mono)}
+details{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 16px}
+summary{cursor:pointer;font-weight:600}
+table{border-collapse:collapse;font-size:12.5px;width:100%}
+td,th{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left}
+td.r,th.r{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+.sec{margin-top:16px;padding-top:20px;border-top:1px solid var(--line)}
+.pbi code{display:block;font-family:var(--mono);font-size:11.5px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:5px 8px;margin:5px 0;overflow-x:auto;white-space:pre;color:var(--fg)}
+.key{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--fg2)}
+.key span{display:flex;align-items:center;gap:6px}.key .sw{display:inline-block}
+.stack{display:grid;gap:6px}
+.srow{display:grid;grid-template-columns:minmax(90px,200px) 1fr;gap:10px;align-items:center;font-size:12.5px}
+.srow .n{color:var(--fg2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbar{display:flex;height:16px;gap:2px}
+.sbar span{display:block;height:100%}
+.sbar span:first-child{border-radius:3px 0 0 3px}.sbar span:last-child{border-radius:0 3px 3px 0}
+.sbar span:hover{filter:brightness(1.12)}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.c8,.c4,.c6{grid-column:span 12}}
+@media (max-width:420px){.val{font-size:24px}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>HR Analytics Dashboard</h1>
+      <p class="sub">PRDA-03 · 22,214 employees · hires from Oct 2000 to Dec 2020</p>
+    </div>
+    <span class="src">Source: project_hr_analytics.HR · Attrition counted up to 29 Sep 2026</span>
+  </header>
+
+  <section class="kpis" aria-label="Key figures">
+    <div class="kpi"><span class="lab">Total employees</span><span class="val" id="k-total"></span><span class="note">Power BI: Card · Count of id</span></div>
+    <div class="kpi"><span class="lab">HQ vs Remote</span><span class="val" id="k-hq"></span>
+      <div class="split" id="k-split" role="img"></div><span class="note" id="k-hqnote"></span></div>
+    <div class="kpi"><span class="lab">Average age</span><span class="val" id="k-age"></span><span class="note">Power BI: Card · Average of Age</span></div>
+    <div class="kpi"><span class="lab">Attrition rate</span><span class="val" id="k-att"></span><span class="note" id="k-attnote"></span></div>
+  </section>
+
+  <section class="grid">
+    <div class="panel c8">
+      <h2>Hiring by year</h2>
+      <div id="line"></div>
+      <p class="insight">Hiring is steady at about 1,000–1,150 per year. 2000 is low only because the data starts in October 2000.</p>
+      <div class="pbi"><b>Line chart</b> · X-axis: Hire Year (Don't summarize) · Y-axis: Count of id</div>
+    </div>
+    <div class="panel c4">
+      <h2>Employees by gender</h2>
+      <div class="donut" id="gender"></div>
+      <p class="insight">Nearly balanced: 50.8% male, 46.5% female, 2.7% non-conforming.</p>
+      <div class="pbi"><b>Donut chart</b> · Legend: gender · Values: Count of id</div>
+    </div>
+
+    <div class="panel c4">
+      <h2>Employees by state</h2>
+      <div class="bars" id="state"></div>
+      <p class="insight">Ohio holds 81% of the workforce. Other states are small branches.</p>
+      <div class="pbi"><b>Clustered bar chart</b> · Y-axis: location_state · X-axis: Count of id</div>
+    </div>
+    <div class="panel c4">
+      <h2>Employees by department</h2>
+      <div class="bars" id="dept"></div>
+      <p class="insight">Engineering (30%) and Accounting (15%) make up almost half the company.</p>
+      <div class="pbi"><b>Clustered bar chart</b> · Y-axis: department · X-axis: Count of id</div>
+    </div>
+    <div class="panel c4">
+      <h2>Employees by race</h2>
+      <div class="bars" id="race"></div>
+      <p class="insight">White is the largest group (28%). No other group is above 17%.</p>
+      <div class="pbi"><b>Clustered bar chart</b> · Y-axis: race · X-axis: Count of id</div>
+    </div>
+
+    <div class="panel c6">
+      <h2>Attrition rate by department</h2>
+      <div class="bars" id="att"></div>
+      <p class="insight">Auditing (19.2%) and Legal (16.7%) lose the most staff, but Auditing has only 52 people, so treat it with care.</p>
+      <div class="pbi"><b>Clustered bar chart</b> · Y-axis: department · X-axis: Attrition Rate (measure)</div>
+    </div>
+    <div class="panel c6">
+      <h2>Employees by age group</h2>
+      <div class="bars" id="age"></div>
+      <p class="insight">The workforce is spread evenly across ages. The 30–39 group is the largest.</p>
+      <div class="pbi"><b>Clustered column or bar chart</b> · Axis: Age Group · Values: Count of id</div>
+    </div>
+  </section>
+
+  <header class="sec">
+    <div>
+      <h1>Attrition analysis</h1>
+      <p class="sub">Page 2 in Power BI · 2,901 employees have left (termdate up to 29 Sep 2026)</p>
+    </div>
+  </header>
+
+  <section class="grid">
+    <div class="panel c12">
+      <h2>Hires vs leavers by year</h2>
+      <div class="key"><span><i class="sw" style="background:var(--s1)"></i>Hires</span><span><i class="sw" style="background:var(--s2)"></i>Leavers</span></div>
+      <div id="hvl"></div>
+      <p class="insight">Hiring stays flat at about 1,100 a year, while leavers climb from 7 in 2001 to about 170 a year after 2018. The data has no hires after 2020, and 2026 covers only January to September.</p>
+      <div class="pbi"><b>Line chart with 2 measures.</b> Hire Year and Term Year are different columns, so first make a year table: <b>Table tools → New table</b>
+        <code>Years = GENERATESERIES(2000, 2026, 1)</code>
+        Then two new measures:
+        <code>Hires = COUNTROWS(FILTER(HR, HR[Hire Year] = SELECTEDVALUE(Years[Value])))</code>
+        <code>Leavers = COUNTROWS(FILTER(HR, HR[Term Year] = SELECTEDVALUE(Years[Value])))</code>
+        X-axis: <b>Years[Value]</b> (Don't summarize, type Categorical) · Y-axis: <b>Hires</b> and <b>Leavers</b></div>
+    </div>
+
+    <div class="panel c6">
+      <h2>Leavers per year</h2>
+      <div id="leavers"></div>
+      <p class="insight">Leavers rose almost every year until the 2021 peak (205), then settled at 160–186 a year.</p>
+      <div class="pbi"><b>Line or column chart</b> · X-axis: Term Year (Don't summarize) · Y-axis: Count of id · Filters pane: Employee Status = <b>Terminated</b></div>
+    </div>
+    <div class="panel c6">
+      <h2>How long leavers stayed</h2>
+      <div id="tenure"></div>
+      <p class="insight">39% of leavers left within their first 5 years, the biggest group. Early-career retention is the main problem.</p>
+      <div class="pbi"><b>Clustered column chart</b> · X-axis: Tenure Group · Y-axis: Count of id · Filters pane: Employee Status = <b>Terminated</b>. Sort the axis 0-5, 6-10, 11-15, 16+.</div>
+    </div>
+
+    <div class="panel c12">
+      <h2>Gender by department</h2>
+      <div class="key"><span><i class="sw" style="background:var(--s1)"></i>Male</span><span><i class="sw" style="background:var(--s2)"></i>Female</span><span><i class="sw" style="background:var(--s3)"></i>Non-Conforming</span></div>
+      <div class="stack" id="gdept"></div>
+      <p class="insight">Every department is close to balanced: women are 43–48% everywhere. Product Management has the lowest share of women (43.2%), Human Resources the highest (47.6%).</p>
+      <div class="pbi"><b>100% Stacked bar chart</b> · Y-axis: department · X-axis: Count of id · Legend: gender</div>
+    </div>
+  </section>
+
+  <details>
+    <summary>Show all numbers as a table</summary>
+    <div class="tw" id="tables"></div>
+  </details>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+const D={"total":22214,"avgAge":38.4,"hq":16715,"remote":5499,"term":2901,"years":[[2000,220],[2001,1122],[2002,1067],[2003,1142],[2004,1135],[2005,1097],[2006,1118],[2007,1090],[2008,1108],[2009,1140],[2010,1099],[2011,1101],[2012,1103],[2013,1105],[2014,1053],[2015,1059],[2016,1122],[2017,1091],[2018,1147],[2019,1083],[2020,1012]],"gender":[["Male",11288],["Female",10321],["Non-Conforming",605]],"state":[["Ohio",18025],["Pennsylvania",1115],["Illinois",868],["Indiana",700],["Michigan",673],["Kentucky",451],["Wisconsin",382]],"dept":[["Engineering",6686],["Accounting",3333],["Sales",1832],["Human Resources",1807],["Training",1692],["Services",1686],["Business Development",1642],["Research and Development",1084],["Support",954],["Product Management",641],["Marketing",494],["Legal",311],["Auditing",52]],"race":[["White",6328],["Two or More Races",3648],["Black or African American",3619],["Asian",3562],["Hispanic or Latino",2501],["American Indian or Alaska Native",1327],["Native Hawaiian or Other Pacific Islander",1229]],"age":[["20-29",5679],["30-39",6161],["40-49",5904],["50+",4470]],"attDept":[["Auditing",19.2],["Legal",16.7],["Support",13.7],["Training",13.7],["Sales",13.4],["Research and Development",13.2],["Engineering",13.2],["Human Resources",13.1],["Services",12.8],["Accounting",12.8],["Product Management",12.8],["Business Development",11.6],["Marketing",11.1]]};
+const fmt=n=>n.toLocaleString('en-US');
+const pct=(a,b)=>(a/b*100).toFixed(1)+'%';
+const $=id=>document.getElementById(id);
+const tip=$('tip');
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const x=Math.min(e.clientX+12,innerWidth-tip.offsetWidth-8);tip.style.left=x+'px';tip.style.top=(e.clientY-36)+'px'}
+function hideTip(){tip.hidden=true}
+
+// KPIs
+$('k-total').textContent=fmt(D.total);
+$('k-hq').textContent=pct(D.hq,D.total);
+$('k-hqnote').innerHTML='HQ '+fmt(D.hq)+' · Remote '+fmt(D.remote)+' ('+pct(D.remote,D.total)+')';
+$('k-split').innerHTML=`<span style="width:${D.hq/D.total*100}%;background:var(--s1)"></span><span style="flex:1;background:var(--s2)"></span>`;
+$('k-split').setAttribute('aria-label','Headquarters '+pct(D.hq,D.total)+', Remote '+pct(D.remote,D.total));
+$('k-age').textContent=D.avgAge+' yrs';
+$('k-att').textContent=pct(D.term,D.total);
+$('k-attnote').textContent=fmt(D.term)+' employees have left';
+
+// Horizontal bars
+function bars(id,rows,opts={}){
+  const max=Math.max(...rows.map(r=>r[1]));const tot=rows.reduce((s,r)=>s+r[1],0);
+  const el=$(id);
+  rows.forEach(([name,v])=>{
+    const row=document.createElement('div');row.className='bar'+(opts.flag&&opts.flag(v)?' flag':'');row.tabIndex=0;
+    const label=opts.suffix?v+opts.suffix:fmt(v);
+    row.innerHTML=`<span class="n" title="${name}">${name}</span><span class="t"><span class="f" style="width:${v/max*100}%"></span></span><span class="v">${label}</span>`;
+    const html=`${name}: <b>${label}</b>`+(opts.suffix?'':` · ${pct(v,tot)}`);
+    row.addEventListener('mouseenter',e=>showTip(e,html));row.addEventListener('mousemove',moveTip);row.addEventListener('mouseleave',hideTip);
+    el.appendChild(row);
+  });
+}
+bars('state',D.state);bars('dept',D.dept);bars('race',D.race);bars('age',D.age);
+bars('att',D.attDept,{suffix:'%',flag:v=>v>=15});
+
+// Donut
+function donut(id,rows,colors){
+  const tot=rows.reduce((s,r)=>s+r[1],0);const R=66,r=48,cx=75,cy=75;let a=-Math.PI/2;
+  const gap=0.02;let paths='';
+  rows.forEach(([n,v],i)=>{
+    const sweep=v/tot*2*Math.PI;const a0=a+gap/2,a1=a+sweep-gap/2;a+=sweep;
+    const p=(ang,rad)=>[cx+rad*Math.cos(ang),cy+rad*Math.sin(ang)];
+    const large=a1-a0>Math.PI?1:0;const [x0,y0]=p(a0,R),[x1,y1]=p(a1,R),[x2,y2]=p(a1,r),[x3,y3]=p(a0,r);
+    paths+=`<path d="M${x0} ${y0}A${R} ${R} 0 ${large} 1 ${x1} ${y1}L${x2} ${y2}A${r} ${r} 0 ${large} 0 ${x3} ${y3}Z" fill="${colors[i]}" data-i="${i}"/>`;
+  });
+  const el=$(id);
+  el.innerHTML=`<svg viewBox="0 0 150 150" role="img" aria-label="Gender split">${paths}<text x="75" y="72" text-anchor="middle" style="font-size:15px;font-weight:700;fill:var(--fg)">${fmt(tot)}</text><text x="75" y="89" text-anchor="middle">employees</text></svg>`+
+    `<div class="legend">${rows.map(([n,v],i)=>`<div><span class="sw" style="background:${colors[i]}"></span><span>${n}</span><span class="num">${fmt(v)} · ${pct(v,tot)}</span></div>`).join('')}</div>`;
+  el.querySelectorAll('path').forEach(p=>{const [n,v]=rows[p.dataset.i];
+    p.addEventListener('mouseenter',e=>showTip(e,`${n}: <b>${fmt(v)}</b> · ${pct(v,tot)}`));p.addEventListener('mousemove',moveTip);p.addEventListener('mouseleave',hideTip);});
+}
+donut('gender',D.gender,['var(--s1)','var(--s2)','var(--s3)']);
+
+// Line chart
+function line(){
+  const el=$('line');const W=720,H=260,L=44,Rt=22,T=12,B=28;
+  const xs=D.years.map(d=>d[0]),ys=D.years.map(d=>d[1]);
+  const ymax=1200;const x=i=>L+i*(W-L-Rt)/(xs.length-1);const y=v=>T+(1-v/ymax)*(H-T-B);
+  let g='';[0,300,600,900,1200].forEach(t=>{g+=`<line x1="${L}" x2="${W-Rt}" y1="${y(t)}" y2="${y(t)}" stroke="var(--grid)"/><text x="${L-8}" y="${y(t)+4}" text-anchor="end">${fmt(t)}</text>`});
+  xs.forEach((yr,i)=>{if(i%4===0||i===xs.length-1)g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle">${yr}</text>`});
+  const pts=ys.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+  const area=`${x(0)},${y(0)} ${pts} ${x(xs.length-1)},${y(0)}`;
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Hires per year, 2000 to 2020">${g}
+    <polygon points="${area}" fill="var(--s1)" opacity=".10"/>
+    <polyline points="${pts}" fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round"/>
+    <line id="xh" y1="${T}" y2="${H-B}" stroke="var(--muted)" stroke-dasharray="3 3" visibility="hidden"/>
+    <circle id="dot" r="4.5" fill="var(--s1)" stroke="var(--panel)" stroke-width="2" visibility="hidden"/>
+    <rect x="${L}" y="${T}" width="${W-L-Rt}" height="${H-T-B}" fill="transparent" id="hit"/></svg>`;
+  const svg=el.querySelector('svg'),hit=el.querySelector('#hit'),xh=el.querySelector('#xh'),dot=el.querySelector('#dot');
+  hit.addEventListener('mousemove',e=>{const r=svg.getBoundingClientRect();const px=(e.clientX-r.left)*W/r.width;
+    const i=Math.max(0,Math.min(xs.length-1,Math.round((px-L)/((W-L-Rt)/(xs.length-1)))));
+    xh.setAttribute('x1',x(i));xh.setAttribute('x2',x(i));xh.setAttribute('visibility','visible');
+    dot.setAttribute('cx',x(i));dot.setAttribute('cy',y(ys[i]));dot.setAttribute('visibility','visible');
+    showTip(e,`${xs[i]}: <b>${fmt(ys[i])}</b> hires`)});
+  hit.addEventListener('mouseleave',()=>{xh.setAttribute('visibility','hidden');dot.setAttribute('visibility','hidden');hideTip()});
+}
+line();
+
+// ---- Attrition page ----
+const HVL=[[2000,220,0],[2001,1122,7],[2002,1067,10],[2003,1142,31],[2004,1135,29],[2005,1097,50],[2006,1118,68],[2007,1090,50],[2008,1108,87],[2009,1140,74],[2010,1099,116],[2011,1101,89],[2012,1103,124],[2013,1105,112],[2014,1053,116],[2015,1059,131],[2016,1122,142],[2017,1091,153],[2018,1147,166],[2019,1083,177],[2020,1012,166],[2021,0,205],[2022,0,186],[2023,0,163],[2024,0,178],[2025,0,160],[2026,0,111]];
+const TEN=[['0-5',1143],['6-10',810],['11-15',592],['16+',356]];
+const GD=[["Engineering",3373,3120,193],["Accounting",1711,1531,91],["Sales",946,839,47],["Human Resources",904,861,42],["Training",858,789,45],["Services",853,800,33],["Business Development",836,757,49],["Research and Development",531,513,40],["Support",481,437,36],["Product Management",349,277,15],["Marketing",256,233,5],["Legal",162,140,9],["Auditing",28,24,0]];
+
+// multi-series line; series = [{name,color,pts:[[i,v]...]}]
+function multiLine(id,labels,series,ymax,ticks,fmtTip,W=1100){
+  const el=$(id);const H=W<800?260:280,L=44,Rt=W<800?20:48,T=14,B=28;
+  const n=labels.length;const x=i=>L+i*(W-L-Rt)/(n-1);const y=v=>T+(1-v/ymax)*(H-T-B);
+  let g='';ticks.forEach(t=>{g+=`<line x1="${L}" x2="${W-Rt}" y1="${y(t)}" y2="${y(t)}" stroke="var(--grid)"/><text x="${L-8}" y="${y(t)+4}" text-anchor="end">${fmt(t)}</text>`});
+  labels.forEach((l,i)=>{if(i%(W<800?5:3)===0||i===n-1)g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle">${l}</text>`});
+  series.forEach(s=>{const pts=s.pts.map(([i,v])=>`${x(i)},${y(v)}`).join(' ');
+    g+=`<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;
+    const [li,lv]=s.pts[s.pts.length-1];g+=`<circle cx="${x(li)}" cy="${y(lv)}" r="4" fill="${s.color}" stroke="var(--panel)" stroke-width="2"/>`;});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${id}">${g}<line class="xh" y1="${T}" y2="${H-B}" stroke="var(--muted)" stroke-dasharray="3 3" visibility="hidden"/><rect x="${L}" y="${T}" width="${W-L-Rt}" height="${H-T-B}" fill="transparent" class="hit"/></svg>`;
+  const svg=el.querySelector('svg'),hit=el.querySelector('.hit'),xh=el.querySelector('.xh');
+  hit.addEventListener('mousemove',e=>{const r=svg.getBoundingClientRect();const px=(e.clientX-r.left)*W/r.width;
+    const i=Math.max(0,Math.min(n-1,Math.round((px-L)/((W-L-Rt)/(n-1)))));xh.setAttribute('x1',x(i));xh.setAttribute('x2',x(i));xh.setAttribute('visibility','visible');showTip(e,fmtTip(i))});
+  hit.addEventListener('mouseleave',()=>{xh.setAttribute('visibility','hidden');hideTip()});
+}
+const yrs=HVL.map(r=>r[0]);
+multiLine('hvl',yrs,[
+  {color:'var(--s1)',pts:HVL.filter(r=>r[0]<=2020).map((r,i)=>[i,r[1]])},
+  {color:'var(--s2)',pts:HVL.filter(r=>r[0]>=2001).map(r=>[r[0]-2000,r[2]])}],
+  1200,[0,300,600,900,1200],i=>{const r=HVL[i];return `${r[0]}: Hires <b>${r[0]<=2020?fmt(r[1]):'no data'}</b> · Leavers <b>${fmt(r[2])}</b>`+(r[0]===2026?' (Jan–Sep)':'')});
+multiLine('leavers',yrs.slice(1),[{color:'var(--s2)',pts:HVL.slice(1).map((r,i)=>[i,r[2]])}],
+  250,[0,50,100,150,200,250],i=>{const r=HVL[i+1];return `${r[0]}: <b>${fmt(r[2])}</b> leavers`+(r[0]===2026?' (Jan–Sep)':'')},600);
+
+// column chart
+(function(){const el=$('tenure');const W=600,H=260,L=40,Rt=12,T=24,B=30;const max=1200;const tot=TEN.reduce((s,r)=>s+r[1],0);
+  const bw=(W-L-Rt)/TEN.length;const y=v=>T+(1-v/max)*(H-T-B);
+  let g='';[0,300,600,900,1200].forEach(t=>{g+=`<line x1="${L}" x2="${W-Rt}" y1="${y(t)}" y2="${y(t)}" stroke="var(--grid)"/><text x="${L-8}" y="${y(t)+4}" text-anchor="end">${fmt(t)}</text>`});
+  TEN.forEach(([n,v],i)=>{const cx=L+bw*i+bw/2,w=bw*0.56,h=y(0)-y(v);
+    g+=`<path d="M${cx-w/2} ${y(0)}V${y(v)+4}Q${cx-w/2} ${y(v)} ${cx-w/2+4} ${y(v)}H${cx+w/2-4}Q${cx+w/2} ${y(v)} ${cx+w/2} ${y(v)+4}V${y(0)}Z" fill="var(--s1)" data-i="${i}"/>`;
+    g+=`<text x="${cx}" y="${y(v)-7}" text-anchor="middle" style="fill:var(--fg);font-weight:600">${fmt(v)} · ${pct(v,tot)}</text><text x="${cx}" y="${H-10}" text-anchor="middle">${n} yrs</text>`});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Years worked before leaving">${g}</svg>`;
+  el.querySelectorAll('path').forEach(p=>{const [n,v]=TEN[p.dataset.i];p.addEventListener('mouseenter',e=>showTip(e,`Stayed ${n} years: <b>${fmt(v)}</b> · ${pct(v,tot)} of leavers`));p.addEventListener('mousemove',moveTip);p.addEventListener('mouseleave',hideTip)});
+})();
+
+// 100% stacked bars
+(function(){const el=$('gdept');const cols=['var(--s1)','var(--s2)','var(--s3)'],names=['Male','Female','Non-Conforming'];
+  GD.forEach(([d,...vals])=>{const tot=vals.reduce((a,b)=>a+b,0);const row=document.createElement('div');row.className='srow';
+    row.innerHTML=`<span class="n" title="${d}">${d}</span><span class="sbar">${vals.map((v,i)=>v?`<span style="width:${v/tot*100}%;background:${cols[i]}" data-i="${i}"></span>`:'').join('')}</span>`;
+    row.querySelectorAll('.sbar span').forEach(s=>{const i=+s.dataset.i;s.addEventListener('mouseenter',e=>showTip(e,`${d} · ${names[i]}: <b>${fmt(vals[i])}</b> · ${pct(vals[i],tot)}`));s.addEventListener('mousemove',moveTip);s.addEventListener('mouseleave',hideTip)});
+    el.appendChild(row)});
+})();
+
+// Tables
+const T=[['Hires by year',D.years],['Gender',D.gender],['State',D.state],['Department',D.dept],['Race',D.race],['Age group',D.age],['Attrition by department (%)',D.attDept]];
+$('tables').innerHTML=T.map(([t,rows])=>`<h2 style="margin:14px 0 6px">${t}</h2><table><tbody>${rows.map(r=>`<tr><td>${r[0]}</td><td class="r">${typeof r[1]==='number'&&r[1]%1?r[1]:fmt(r[1])}</td></tr>`).join('')}</tbody></table>`).join('');
+</script>

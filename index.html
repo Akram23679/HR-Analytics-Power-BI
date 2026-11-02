@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="PRDA-03 HR Analytics case study: workforce composition, hiring, attrition and retention insights.">
+<title>HR Analytics — Akram Ali</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap navin">
+    <a class="brand" href="#top"><i></i>akram.data</a>
+    <nav class="navlinks">
+      <a href="#brief">Brief</a>
+      <a href="#data">Data</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#findings">Findings</a>
+      <a href="#actions">Actions</a>
+    </nav>
+    <button class="theme" id="themeBtn" aria-label="Toggle colour theme">◐</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <div class="wrap hero">
+    <div>
+      <span class="pill"><i></i>PRDA-03 · HR Analytics · October 2026</span>
+      <h1>Understanding the workforce: <em>turning people data into better decisions.</em></h1>
+      <p class="lede">An HR analytics project exploring workforce composition, hiring patterns, employee attrition and retention opportunities across <b>22,214 employee records</b>. The analysis combines data preparation, workforce metrics and visual reporting to identify practical HR actions.</p>
+      <div class="ctas">
+        <a class="btn primary" href="#dashboard">Explore the dashboard →</a>
+        <a class="btn ghost" href="#findings">Read key findings</a>
+      </div>
+      <div class="tags">
+        <span class="tag">Power BI</span><span class="tag">Tableau</span><span class="tag">MySQL</span>
+        <span class="tag">Excel</span><span class="tag">DAX</span><span class="tag">Data cleaning</span>
+      </div>
+    </div>
+
+    <div class="dcard">
+      <div class="dhead">
+        <div class="tabs">
+          <button class="tab" aria-selected="true" data-view="workforce">Workforce</button>
+          <button class="tab" aria-selected="false" data-view="attrition">Attrition</button>
+          <button class="tab" aria-selected="false" data-view="location">Location</button>
+        </div>
+        <span class="code">PRDA-03</span>
+      </div>
+
+      <div class="view" data-panel="workforce">
+        <div class="kpis">
+          <div class="kpi"><small>Employees</small><strong>22,214</strong></div>
+          <div class="kpi"><small>Average age</small><strong>38.4</strong></div>
+          <div class="kpi"><small>Departments</small><strong>13</strong></div>
+        </div>
+        <div class="bars">
+          <div class="barstitle">Workforce by work arrangement</div>
+          <div class="brow lead"><span class="lbl">Headquarters</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="val">75.2%</span></div>
+          <div class="brow"><span class="lbl">Remote</span><span class="track"><span class="fill" style="width:33%"></span></span><span class="val">24.8%</span></div>
+          <p class="takeaway"><b>Takeaway:</b> three-quarters of employee records are associated with headquarters work.</p>
+        </div>
+      </div>
+
+      <div class="view" data-panel="attrition" hidden>
+        <div class="kpis">
+          <div class="kpi"><small>Attrition rate</small><strong>13.1%</strong></div>
+          <div class="kpi"><small>Leavers</small><strong>2,901</strong></div>
+          <div class="kpi"><small>Early tenure</small><strong>39%</strong></div>
+        </div>
+        <div class="bars">
+          <div class="barstitle">Leavers by tenure group</div>
+          <div class="brow lead"><span class="lbl">0–5 years</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="val">1,143</span></div>
+          <div class="brow"><span class="lbl">6–10 years</span><span class="track"><span class="fill" style="width:70.9%"></span></span><span class="val">810</span></div>
+          <div class="brow"><span class="lbl">11–15 years</span><span class="track"><span class="fill" style="width:51.8%"></span></span><span class="val">592</span></div>
+          <div class="brow low"><span class="lbl">16+ years</span><span class="track"><span class="fill" style="width:31.1%"></span></span><span class="val">356</span></div>
+          <p class="takeaway"><b>Takeaway:</b> 39% of recorded leavers departed within their first five years.</p>
+        </div>
+      </div>
+
+      <div class="view" data-panel="location" hidden>
+        <div class="kpis">
+          <div class="kpi"><small>Ohio employees</small><strong>18,025</strong></div>
+          <div class="kpi"><small>Cleveland</small><strong>16,871</strong></div>
+          <div class="kpi"><small>Ohio share</small><strong>81.1%</strong></div>
+        </div>
+        <div class="bars">
+          <div class="barstitle">Employees by state (top locations)</div>
+          <div class="brow lead"><span class="lbl">Ohio</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="val">18,025</span></div>
+          <div class="brow"><span class="lbl">Pennsylvania</span><span class="track"><span class="fill" style="width:6.2%"></span></span><span class="val">1,115</span></div>
+          <div class="brow"><span class="lbl">Illinois</span><span class="track"><span class="fill" style="width:4.8%"></span></span><span class="val">868</span></div>
+          <p class="takeaway"><b>Takeaway:</b> the employee base is highly concentrated in Ohio, particularly Cleveland.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 01 Brief -->
+  <section class="block" id="brief">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">01 / project brief</div><h2>Understand the workforce, then identify where HR can act.</h2></div>
+        <p>The project examines employee demographics, hiring trends, work location, departmental distribution and attrition. The goal is to translate workforce records into evidence that can support retention, workforce planning and people-related decisions.</p>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><strong>22,214</strong><span>employee records analysed</span></div>
+        <div class="stat"><strong>13</strong><span>employee data attributes</span></div>
+        <div class="stat"><strong>7</strong><span>states represented</span></div>
+        <div class="stat"><strong>13</strong><span>departments represented</span></div>
+      </div>
+      <div class="two">
+        <div class="panel">
+          <div class="panel-h"><span>Analysis themes</span><span>PRDA-03</span></div>
+          <div class="panel-body"><ul>
+            <li><b>Workforce composition:</b> age, gender, race, department and location.</li>
+            <li><b>Hiring patterns:</b> annual hiring trends and workforce distribution.</li>
+            <li><b>Attrition:</b> employee exits by year, department, tenure and work arrangement.</li>
+            <li><b>Retention opportunities:</b> early-tenure risk, succession planning and flexible work.</li>
+          </ul></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><span>Project deliverables</span><span>Analysis</span></div>
+          <div class="panel-body"><ul>
+            <li>Prepared HR dataset and calculated workforce attributes.</li>
+            <li>Power BI workforce and attrition dashboard.</li>
+            <li>Parallel Tableau dashboard and calculated fields.</li>
+            <li>Project report and presentation with findings and recommendations.</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 Data -->
+  <section class="block" id="data">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">02 / data and method</div><h2>Prepare employee records before measuring workforce trends.</h2></div>
+        <p>The analysis uses the HR dataset and applies consistent date handling and employee-status logic. The report uses 29 September 2026 as its analysis cut-off for term-date interpretation.</p>
+      </div>
+      <div class="two">
+        <div class="panel">
+          <div class="panel-h"><span>Data preparation</span><span>Quality checks</span></div>
+          <div class="panel-body"><ul>
+            <li>Loaded and reviewed 22,214 employee records.</li>
+            <li>Checked employee IDs for duplicates.</li>
+            <li>Converted hire and birth dates using day-month-year locale.</li>
+            <li>Handled blank term dates as active employees.</li>
+            <li>Treated future-dated term dates as active at the project cut-off.</li>
+            <li>Created Employee Status, Age Group, Hire Year, Term Year, Tenure and Tenure Group fields in DAX.</li>
+          </ul></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><span>Tools and techniques</span><span>Stack</span></div>
+          <div class="panel-body"><ul>
+            <li><b>MySQL Workbench:</b> database access.</li>
+            <li><b>Microsoft Excel:</b> data review and preparation.</li>
+            <li><b>Power BI Desktop:</b> two-page workforce and attrition dashboard.</li>
+            <li><b>Tableau:</b> parallel dashboard and calculated fields.</li>
+            <li><b>DAX:</b> employee status, age, tenure and date attributes.</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 Dashboard -->
+  <section class="block" id="dashboard">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">03 / dashboard</div><h2>Explore the workforce and attrition indicators.</h2></div>
+        <p>These charts recreate key views from the analysis using the project dataset. They are portfolio visuals, not a live connection to the original Power BI or Tableau reports.</p>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-panel wide"><h3>Hiring trend by year</h3><p>Employee hire records by year, 2000–2020</p><div class="chartbox"><canvas id="hireChart"></canvas></div></div>
+        <div class="chart-panel"><h3>Gender distribution</h3><p>Employee records by gender category</p><div class="chartbox"><canvas id="genderChart"></canvas></div></div>
+        <div class="chart-panel"><h3>Age-group distribution</h3><p>Employees grouped by age</p><div class="chartbox"><canvas id="ageChart"></canvas></div></div>
+        <div class="chart-panel"><h3>Employees by state</h3><p>Geographic concentration across seven states</p><div class="chartbox tall"><canvas id="stateChart"></canvas></div></div>
+        <div class="chart-panel"><h3>Employees by department</h3><p>Department-level workforce distribution</p><div class="chartbox tall"><canvas id="deptChart"></canvas></div></div>
+        <div class="chart-panel"><h3>Attrition rate by department</h3><p>Reported rate; department employee counts differ</p><div class="chartbox tall"><canvas id="attrChart"></canvas></div></div>
+        <div class="chart-panel"><h3>Leavers by tenure</h3><p>Recorded leavers grouped by years of service</p><div class="chartbox"><canvas id="tenureChart"></canvas></div></div>
+        <div class="chart-panel"><h3>Annual employee exits</h3><p>Recorded terminations by year through 2026</p><div class="chartbox"><canvas id="leaversChart"></canvas></div></div>
+        <div class="chart-panel wide"><h3>Race and ethnicity distribution</h3><p>Employee records across the categories in the dataset</p><div class="chartbox tall"><canvas id="raceChart"></canvas></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 Findings -->
+  <section class="block" id="findings">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">04 / findings</div><h2>Where the workforce data signals an opportunity.</h2></div>
+        <p>These findings summarize patterns reported in the HR Analytics project. They describe associations in the dataset and should not be interpreted as proof of cause.</p>
+      </div>
+      <div class="findings">
+        <div class="finding"><div class="big">≈1,100</div><h3>Consistent annual hiring</h3><p>Annual hiring stayed broadly steady from 2001 to 2020, with no major hiring freeze or sudden expansion evident in the report.</p></div>
+        <div class="finding"><div class="big">81%</div><h3>Ohio workforce concentration</h3><p>18,025 employees are based in Ohio, with 16,871 located in Cleveland. The workforce is highly concentrated around headquarters.</p></div>
+        <div class="finding"><div class="big">50.8 / 46.5%</div><h3>Near-balanced gender mix</h3><p>Male employees account for 50.8%, female employees 46.5%, and non-conforming employees 2.7%.</p></div>
+        <div class="finding"><div class="big">39%</div><h3>Early-tenure retention</h3><p>1,143 of 2,901 recorded leavers (39%) left within their first five years.</p></div>
+        <div class="finding"><div class="big">19.2%</div><h3>Auditing has the highest rate</h3><p>Auditing has the highest reported attrition rate, but the department has only 52 employees. Legal is a larger-team warning signal at 16.7%.</p></div>
+        <div class="finding"><div class="big">12.3% vs 13.3%</div><h3>Remote vs headquarters</h3><p>Remote employees have a lower reported attrition rate than headquarters employees in this dataset. This is an association, not proof that remote work causes lower attrition.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 Actions -->
+  <section class="block" id="actions">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">05 / recommendations</div><h2>Eight actions to strengthen retention and workforce planning.</h2></div>
+        <p>The recommendations follow the opportunities identified in the project report, with an emphasis on early-tenure retention, targeted investigation and data quality.</p>
+      </div>
+      <div class="actions">
+        <div class="action"><span class="num">01</span><div><h3>Strengthen early-career retention</h3><p>Improve onboarding, assign mentors, schedule 6-month / 1-year / 3-year check-ins, and clarify career paths and promotion criteria.</p></div></div>
+        <div class="action"><span class="num">02</span><div><h3>Investigate Legal and Auditing</h3><p>Use exit interviews and engagement surveys to examine workload, compensation and growth opportunities. Interpret Auditing carefully because its team is small.</p></div></div>
+        <div class="action"><span class="num">03</span><div><h3>Plan hiring against attrition</h3><p>Track quarterly net headcount (hires minus leavers) and adjust hiring targets as employee departures change.</p></div></div>
+        <div class="action"><span class="num">04</span><div><h3>Support flexible work</h3><p>Continue evaluating remote and hybrid options as a potential retention lever, while monitoring outcomes by department.</p></div></div>
+        <div class="action"><span class="num">05</span><div><h3>Prepare for succession</h3><p>About one-fifth of the workforce is aged 50 or older. Plan succession and knowledge transfer for critical roles.</p></div></div>
+        <div class="action"><span class="num">06</span><div><h3>Reduce location concentration</h3><p>Consider growing branch offices or remote hiring to broaden the talent pool and reduce dependence on Ohio.</p></div></div>
+        <div class="action"><span class="num">07</span><div><h3>Maintain diversity monitoring</h3><p>Continue reviewing gender and race representation and compare attrition across groups over time.</p></div></div>
+        <div class="action"><span class="num">08</span><div><h3>Improve HR data quality</h3><p>Review future-dated terminations, add more recent hires, and calculate age automatically from birthdate.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 Limits -->
+  <section class="block" id="limits">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">06 / limitations and next steps</div><h2>Interpret the results within the dataset’s limits.</h2></div>
+        <p>The project report identifies data coverage and date-handling considerations that should be addressed before using the metrics for operational decisions.</p>
+      </div>
+      <div class="limits">
+        <div class="panel">
+          <div class="panel-h"><span>Limitations</span></div>
+          <ul>
+            <li>The dataset is a snapshot and does not by itself explain why employees leave.</li>
+            <li>Future-dated termination records were treated as active at the 29 September 2026 cut-off.</li>
+            <li>Some department-level rates are based on small employee populations; interpret them with counts.</li>
+            <li>Demographic and location comparisons show patterns, not causation.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><span>Suggested next steps</span></div>
+          <ul>
+            <li>Validate the term-date cut-off and refresh the dataset regularly.</li>
+            <li>Combine attrition metrics with exit interviews and engagement feedback.</li>
+            <li>Track early-tenure retention cohorts over time.</li>
+            <li>Monitor quarterly hiring, exits and net headcount by department and location.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>Akram Ali · Data Analytics Project · PRDA-03</span>
+    <span>HR Analytics · Power BI / Tableau · October 2026</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const root=document.documentElement,theme=document.getElementById('themeBtn');
+  try{const saved=localStorage.getItem('hr-theme');if(saved)root.dataset.theme=saved}catch(e){}
+  theme.addEventListener('click',()=>{const next=root.dataset.theme==='dark'?'light':'dark';root.dataset.theme=next;try{localStorage.setItem('hr-theme',next)}catch(e){}});
+  document.querySelectorAll('.dcard .tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.dcard .tab').forEach(x=>x.setAttribute('aria-selected',x===t?'true':'false'));
+    document.querySelectorAll('.dcard .view').forEach(v=>v.hidden=v.dataset.panel!==t.dataset.view);
+  }));
+})();
+
+const D={"hire":{"labels":["2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020"],"values":[220,1122,1067,1142,1135,1097,1118,1090,1108,1140,1099,1101,1103,1105,1053,1059,1122,1091,1147,1083,1012]},"gender":{"labels":["Male","Female","Non-Conforming"],"values":[11288,10321,605]},"state":{"labels":["Ohio","Pennsylvania","Illinois","Indiana","Michigan","Kentucky","Wisconsin"],"values":[18025,1115,868,700,673,451,382]},"dept":{"labels":["Engineering","Accounting","Sales","Human Resources","Training","Services","Business Development","Research and Development","Support","Product Management","Marketing","Legal","Auditing"],"values":[6686,3333,1832,1807,1692,1686,1642,1084,954,641,494,311,52]},"race":{"labels":["White","Two or More Races","Black or African American","Asian","Hispanic or Latino","American Indian or Alaska Native","Native Hawaiian or Other Pacific Islander"],"values":[6328,3648,3619,3562,2501,1327,1229]},"attr":{"labels":["Auditing","Legal","Support","Training","Sales","Research and Development","Engineering","Human Resources","Services","Accounting","Product Management","Business Development","Marketing"],"values":[19.2,16.7,13.7,13.7,13.4,13.2,13.2,13.1,12.8,12.8,12.8,11.6,11.1],"counts":[52,311,954,1692,1832,1084,6686,1807,1686,3333,641,1642,494]},"age":{"labels":["20–29","30–39","40–49","50+"],"values":[5679,6161,5904,4470]},"tenure":{"labels":["0–5 years","6–10 years","11–15 years","16+ years"],"values":[1143,810,592,356]},"leavers":{"labels":["2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025","2026"],"values":[7,10,31,29,50,68,50,87,74,116,89,124,112,116,131,142,153,166,177,166,205,186,163,178,160,111]}};
+
+const accent='#0f766e',blue='#7895a8',orange='#c68b5a',palette=['#0f766e','#7895a8','#c68b5a','#8ba99b','#9b8ac5','#d2b36f','#7e9cba'];
+Chart.defaults.font.family='"Space Grotesk",sans-serif';
+Chart.defaults.color='#68716d';
+Chart.defaults.plugins.legend.labels.usePointStyle=true;
+Chart.defaults.plugins.legend.labels.boxWidth=8;
+const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#192c29',padding:10,cornerRadius:7}}};
+
+function bar(id,o,horizontal=false,color=blue){
+  new Chart(document.getElementById(id),{type:'bar',data:{labels:o.labels,datasets:[{data:o.values,backgroundColor:color,borderRadius:4,borderSkipped:false,maxBarThickness:23}]},options:{...base,indexAxis:horizontal?'y':'x',scales:{x:{grid:{display:!horizontal,color:'#eceee9'},border:{display:false},ticks:{font:{size:10}}},y:{grid:{display:horizontal,color:'#eceee9'},border:{display:false},ticks:{font:{size:10}}}}}});
+}
+
+new Chart(document.getElementById('hireChart'),{type:'line',data:{labels:D.hire.labels,datasets:[{data:D.hire.values,borderColor:accent,backgroundColor:'rgba(15,118,110,.12)',fill:true,tension:.3,pointRadius:2,borderWidth:2}]},options:{...base,scales:{x:{grid:{display:false},border:{display:false}},y:{beginAtZero:true,grid:{color:'#eceee9'},border:{display:false}}}}});
+new Chart(document.getElementById('genderChart'),{type:'doughnut',data:{labels:D.gender.labels,datasets:[{data:D.gender.values,backgroundColor:palette.slice(0,3),borderWidth:3,borderColor:'#fff',hoverOffset:6}]},options:{...base,cutout:'68%',plugins:{legend:{display:true,position:'bottom',labels:{usePointStyle:true,boxWidth:8,font:{size:10}}},tooltip:base.plugins.tooltip}}});
+bar('ageChart',D.age,false,accent);
+bar('stateChart',D.state,true);
+bar('deptChart',D.dept,true);
+bar('raceChart',D.race,true);
+new Chart(document.getElementById('attrChart'),{type:'bar',data:{labels:D.attr.labels,datasets:[{data:D.attr.values,backgroundColor:D.attr.values.map(v=>v>=16?'#c68b5a':blue),borderRadius:4,borderSkipped:false}]},options:{...base,indexAxis:'y',scales:{x:{min:0,max:20,ticks:{callback:v=>v+'%'},grid:{color:'#eceee9'},border:{display:false}},y:{grid:{display:false},border:{display:false},ticks:{font:{size:10}}}},plugins:{...base.plugins,tooltip:{...base.plugins.tooltip,callbacks:{label:c=>c.raw+'% attrition · '+D.attr.counts[c.dataIndex]+' employees'}}}}});
+bar('tenureChart',D.tenure,false,orange);
+bar('leaversChart',D.leavers,false,blue);
+</script>
+</body>
+</html>
